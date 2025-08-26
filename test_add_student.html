@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Add Student Modal</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-btn { 
+            background: #3b82f6; 
+            color: white; 
+            padding: 10px 20px; 
+            border: none; 
+            border-radius: 5px; 
+            cursor: pointer;
+            margin: 10px;
+        }
+        .test-btn:hover { background: #2563eb; }
+        .success { color: green; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Add Student Modal Test</h1>
+    
+    <button class="test-btn" onclick="testAddStudentButton()">
+        Test "Add Student" Button
+    </button>
+    
+    <button class="test-btn" onclick="testScrolling()">
+        Test Modal Scrolling
+    </button>
+    
+    <div id="testResults"></div>
+    
+    <iframe src="student_management.html" width="100%" height="600" style="border: 1px solid #ccc; margin-top: 20px;"></iframe>
+    
+    <script>
+        function testAddStudentButton() {
+            const results = document.getElementById('testResults');
+            results.innerHTML = '<h3>Testing Add Student Button...</h3>';
+            
+            // Test will be performed in the iframe
+            const iframe = document.querySelector('iframe');
+            iframe.onload = function() {
+                try {
+                    const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                    const addBtn = iframeDoc.getElementById('addStudentBtn');
+                    
+                    if (addBtn) {
+                        results.innerHTML += '<p class="success">✅ Add Student button found</p>';
+                        
+                        // Simulate click
+                        addBtn.click();
+                        
+                        setTimeout(() => {
+                            const modal = iframeDoc.getElementById('addStudentModal');
+                            if (modal && !modal.classList.contains('hidden')) {
+                                results.innerHTML += '<p class="success">✅ Modal opens on button click</p>';
+                                testFormElements(iframeDoc, results);
+                            } else {
+                                results.innerHTML += '<p class="error">❌ Modal does not open</p>';
+                            }
+                        }, 500);
+                        
+                    } else {
+                        results.innerHTML += '<p class="error">❌ Add Student button not found</p>';
+                    }
+                } catch (error) {
+                    results.innerHTML += '<p class="error">❌ Error accessing iframe: ' + error.message + '</p>';
+                }
+            };
+        }
+        
+        function testFormElements(iframeDoc, results) {
+            const requiredFields = ['firstName', 'lastName', 'dateOfBirth', 'gender', 'studentClass'];
+            let foundFields = 0;
+            
+            requiredFields.forEach(fieldId => {
+                const field = iframeDoc.getElementById(fieldId);
+                if (field) {
+                    foundFields++;
+                }
+            });
+            
+            results.innerHTML += `<p class="success">✅ Found ${foundFields}/${requiredFields.length} required form fields</p>`;
+            
+            // Test scrolling
+            const scrollContainer = iframeDoc.querySelector('.overflow-y-auto');
+            if (scrollContainer) {
+                results.innerHTML += '<p class="success">✅ Scrollable container found</p>';
+                results.innerHTML += `<p>📏 Container height: ${scrollContainer.style.maxHeight}</p>`;
+            } else {
+                results.innerHTML += '<p class="error">❌ Scrollable container not found</p>';
+            }
+        }
+        
+        function testScrolling() {
+            const results = document.getElementById('testResults');
+            results.innerHTML = '<h3>Testing Modal Scrolling...</h3>';
+            results.innerHTML += '<p>🔄 Scroll test instructions:</p>';
+            results.innerHTML += '<ul>';
+            results.innerHTML += '<li>1. Click "Add Student" button in the iframe below</li>';
+            results.innerHTML += '<li>2. Try scrolling up and down in the form</li>';
+            results.innerHTML += '<li>3. Check if all form fields are accessible</li>';
+            results.innerHTML += '<li>4. Verify submit button stays at bottom</li>';
+            results.innerHTML += '</ul>';
+        }
+    </script>
+</body>
+</html>

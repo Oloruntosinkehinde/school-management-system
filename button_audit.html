@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Button Functionality Audit</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .audit-section { 
+            border: 1px solid #ccc; 
+            margin: 20px 0; 
+            padding: 15px; 
+            border-radius: 5px; 
+        }
+        .working { background-color: #d4edda; }
+        .broken { background-color: #f8d7da; }
+        .unknown { background-color: #fff3cd; }
+        h3 { margin-top: 0; }
+        ul { margin: 10px 0; }
+        li { margin: 5px 0; }
+        .test-btn { 
+            background: #007bff; 
+            color: white; 
+            padding: 5px 10px; 
+            border: none; 
+            border-radius: 3px; 
+            cursor: pointer; 
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 School Management System - Button Functionality Audit</h1>
+    
+    <div class="audit-section broken">
+        <h3>❌ BROKEN BUTTONS (Missing Event Handlers)</h3>
+        <ul>
+            <li><strong>Staff Directory</strong>: Add Staff Member, Import, Export</li>
+            <li><strong>Student Management</strong>: Import, Export, Bulk Actions</li>
+            <li><strong>Fee Management</strong>: Add Fee Structure, Generate Reports</li>
+            <li><strong>Reports & Analytics</strong>: Generate Report, Export buttons</li>
+            <li><strong>Dashboard</strong>: Most action buttons</li>
+        </ul>
+    </div>
+
+    <div class="audit-section working">
+        <h3>✅ WORKING BUTTONS</h3>
+        <ul>
+            <li><strong>Student Management</strong>: Add New Student (Fixed)</li>
+            <li><strong>All Pages</strong>: Mobile menu toggle, sidebar navigation</li>
+        </ul>
+    </div>
+
+    <div class="audit-section unknown">
+        <h3>🔍 TESTING EACH PAGE</h3>
+        <button class="test-btn" onclick="testPage('dashboard.html')">Test Dashboard</button>
+        <button class="test-btn" onclick="testPage('student_management.html')">Test Students</button>
+        <button class="test-btn" onclick="testPage('staff_directory.html')">Test Staff</button>
+        <button class="test-btn" onclick="testPage('fee_management.html')">Test Fees</button>
+        <button class="test-btn" onclick="testPage('reports_analytics.html')">Test Reports</button>
+    </div>
+
+    <div id="testResults"></div>
+    
+    <script>
+        function testPage(pageName) {
+            const results = document.getElementById('testResults');
+            results.innerHTML = `<h3>Testing ${pageName}...</h3>`;
+            
+            // Create iframe to test the page
+            const iframe = document.createElement('iframe');
+            iframe.src = `pages/${pageName}`;
+            iframe.width = '100%';
+            iframe.height = '400';
+            iframe.style.border = '1px solid #ccc';
+            
+            iframe.onload = function() {
+                try {
+                    const doc = iframe.contentDocument || iframe.contentWindow.document;
+                    const buttons = doc.querySelectorAll('button');
+                    
+                    results.innerHTML += `<p>Found ${buttons.length} buttons in ${pageName}</p>`;
+                    
+                    let workingButtons = 0;
+                    let brokenButtons = 0;
+                    
+                    buttons.forEach((button, index) => {
+                        const hasId = button.id ? true : false;
+                        const hasOnclick = button.onclick ? true : false;
+                        const buttonText = button.textContent.trim().substring(0, 30);
+                        
+                        if (hasId || hasOnclick || button.type === 'submit') {
+                            workingButtons++;
+                            results.innerHTML += `<p style="color: green;">✅ "${buttonText}" - Has functionality</p>`;
+                        } else {
+                            brokenButtons++;
+                            results.innerHTML += `<p style="color: red;">❌ "${buttonText}" - No event handler</p>`;
+                        }
+                    });
+                    
+                    results.innerHTML += `<h4>Summary: ${workingButtons} working, ${brokenButtons} broken</h4>`;
+                    
+                } catch (error) {
+                    results.innerHTML += `<p style="color: red;">Error testing ${pageName}: ${error.message}</p>`;
+                }
+            };
+            
+            results.appendChild(iframe);
+        }
+    </script>
+</body>
+</html>

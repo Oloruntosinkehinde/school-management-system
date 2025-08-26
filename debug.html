@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug School Management System</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }
+        .container { max-width: 1000px; margin: 0 auto; }
+        .card { background: white; padding: 20px; margin: 10px 0; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .error { border-left: 4px solid #e74c3c; }
+        .success { border-left: 4px solid #27ae60; }
+        .warning { border-left: 4px solid #f39c12; }
+        .test-btn { background: #3498db; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; margin: 5px; }
+        .test-btn:hover { background: #2980b9; }
+        .result { margin: 10px 0; padding: 10px; background: #ecf0f1; border-radius: 4px; }
+        #console { height: 200px; overflow-y: auto; background: #2c3e50; color: #ecf0f1; padding: 10px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 School Management System - Debug Mode</h1>
+        
+        <div class="card">
+            <h2>Current Status Check</h2>
+            <div id="status-check">
+                <p>✅ This HTML page loaded successfully</p>
+                <p>✅ XAMPP Apache is working</p>
+                <p>🔄 Running additional tests...</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Quick Tests</h2>
+            <button class="test-btn" onclick="testCSS()">Test CSS Loading</button>
+            <button class="test-btn" onclick="testJavaScript()">Test JavaScript</button>
+            <button class="test-btn" onclick="testMainApp()">Test Main App</button>
+            <button class="test-btn" onclick="testLoginPage()">Test Login Page</button>
+            <button class="test-btn" onclick="testDatabase()">Test Database</button>
+            <div id="test-results"></div>
+        </div>
+
+        <div class="card">
+            <h2>Console Output</h2>
+            <div id="console"></div>
+        </div>
+
+        <div class="card">
+            <h2>File Access Test</h2>
+            <div id="file-test">
+                <p>Testing file access...</p>
+            </div>
+        </div>
+
+        <div class="card warning">
+            <h2>⚠️ What specific error are you seeing?</h2>
+            <ul>
+                <li><strong>"Page not found" or "404 Error"?</strong> - URL issue</li>
+                <li><strong>"Page loads but buttons don't work"?</strong> - JavaScript issue</li>
+                <li><strong>"Page loads but looks unstyled"?</strong> - CSS issue</li>
+                <li><strong>"Database connection error"?</strong> - MySQL/Database issue</li>
+                <li><strong>"White/blank page"?</strong> - PHP error</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2>Direct Links to Test</h2>
+            <ul>
+                <li><a href="index.html" target="_blank">Main Application (index.html)</a></li>
+                <li><a href="pages/login.html" target="_blank">Login Page</a></li>
+                <li><a href="pages/dashboard.html" target="_blank">Dashboard</a></li>
+                <li><a href="pages/student_management.html" target="_blank">Student Management</a></li>
+                <li><a href="pages/attendance_management.html" target="_blank">Attendance Management</a></li>
+                <li><a href="phptest.php" target="_blank">PHP Test</a></li>
+                <li><a href="xampp_diagnostic.php" target="_blank">Full Diagnostic</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        function log(message) {
+            const console = document.getElementById('console');
+            console.innerHTML += new Date().toLocaleTimeString() + ': ' + message + '\n';
+            console.scrollTop = console.scrollHeight;
+        }
+
+        function showResult(test, success, message) {
+            const results = document.getElementById('test-results');
+            const status = success ? '✅' : '❌';
+            const cssClass = success ? 'success' : 'error';
+            results.innerHTML += `<div class="result ${cssClass}">${status} ${test}: ${message}</div>`;
+        }
+
+        function testCSS() {
+            log('Testing CSS loading...');
+            const link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.href = 'css/main.css';
+            link.onload = () => {
+                log('CSS loaded successfully');
+                showResult('CSS Test', true, 'main.css loaded successfully');
+            };
+            link.onerror = () => {
+                log('CSS failed to load');
+                showResult('CSS Test', false, 'main.css failed to load - check if css/main.css exists');
+            };
+            document.head.appendChild(link);
+        }
+
+        function testJavaScript() {
+            log('Testing JavaScript functionality...');
+            try {
+                // Test basic JavaScript
+                const testVar = 'JavaScript is working';
+                log('Basic JavaScript: ' + testVar);
+                showResult('JavaScript Test', true, 'Basic JavaScript execution working');
+                
+                // Test DOM manipulation
+                const testDiv = document.createElement('div');
+                testDiv.innerHTML = 'DOM manipulation working';
+                showResult('DOM Test', true, 'DOM manipulation working');
+                
+            } catch(e) {
+                log('JavaScript error: ' + e.message);
+                showResult('JavaScript Test', false, 'Error: ' + e.message);
+            }
+        }
+
+        function testMainApp() {
+            log('Testing main application access...');
+            fetch('index.html')
+                .then(response => {
+                    if (response.ok) {
+                        log('Main app accessible');
+                        showResult('Main App Test', true, 'index.html is accessible');
+                    } else {
+                        log('Main app returned error: ' + response.status);
+                        showResult('Main App Test', false, 'HTTP error: ' + response.status);
+                    }
+                })
+                .catch(error => {
+                    log('Main app fetch error: ' + error.message);
+                    showResult('Main App Test', false, 'Fetch error: ' + error.message);
+                });
+        }
+
+        function testLoginPage() {
+            log('Testing login page access...');
+            fetch('pages/login.html')
+                .then(response => {
+                    if (response.ok) {
+                        log('Login page accessible');
+                        showResult('Login Page Test', true, 'login.html is accessible');
+                    } else {
+                        log('Login page returned error: ' + response.status);
+                        showResult('Login Page Test', false, 'HTTP error: ' + response.status);
+                    }
+                })
+                .catch(error => {
+                    log('Login page fetch error: ' + error.message);
+                    showResult('Login Page Test', false, 'Fetch error: ' + error.message);
+                });
+        }
+
+        function testDatabase() {
+            log('Testing database connection...');
+            fetch('setup_database.php')
+                .then(response => {
+                    if (response.ok) {
+                        return response.text();
+                    } else {
+                        throw new Error('HTTP error: ' + response.status);
+                    }
+                })
+                .then(data => {
+                    if (data.includes('✅') || data.includes('SUCCESS')) {
+                        log('Database test appears successful');
+                        showResult('Database Test', true, 'Database connection appears to be working');
+                    } else if (data.includes('❌') || data.includes('ERROR')) {
+                        log('Database test shows errors');
+                        showResult('Database Test', false, 'Database has issues - check setup_database.php');
+                    } else {
+                        log('Database test returned unexpected response');
+                        showResult('Database Test', false, 'Unexpected response from database test');
+                    }
+                })
+                .catch(error => {
+                    log('Database test error: ' + error.message);
+                    showResult('Database Test', false, 'Error: ' + error.message);
+                });
+        }
+
+        // Run initial tests
+        window.onload = function() {
+            log('Debug page loaded');
+            log('Current URL: ' + window.location.href);
+            log('User Agent: ' + navigator.userAgent);
+            
+            // Test file access
+            const fileTests = ['css/main.css', 'css/tailwind.css', 'pages/login.html'];
+            const fileTestDiv = document.getElementById('file-test');
+            fileTestDiv.innerHTML = '<h3>File Access Results:</h3>';
+            
+            fileTests.forEach(file => {
+                fetch(file)
+                    .then(response => {
+                        const status = response.ok ? '✅' : '❌';
+                        fileTestDiv.innerHTML += `<p>${status} ${file} - Status: ${response.status}</p>`;
+                        log(`File test: ${file} - ${response.status}`);
+                    })
+                    .catch(error => {
+                        fileTestDiv.innerHTML += `<p>❌ ${file} - Error: ${error.message}</p>`;
+                        log(`File test error: ${file} - ${error.message}`);
+                    });
+            });
+        };
+    </script>
+</body>
+</html>
